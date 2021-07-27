@@ -207,6 +207,8 @@ class Salesforce():
         self.is_sandbox = is_sandbox is True or (isinstance(is_sandbox, str) and is_sandbox.lower() == 'true')
         self.select_fields_by_default = select_fields_by_default is True or (isinstance(select_fields_by_default, str) and select_fields_by_default.lower() == 'true')
         self.default_start_date = default_start_date
+        # self.default_country = default_country
+
         self.rest_requests_attempted = 0
         self.jobs_completed = 0
         self.data_url = "{}/services/data/v41.0/{}"
@@ -317,7 +319,7 @@ class Salesforce():
                                     catalog_entry['tap_stream_id'],
                                     replication_key) or self.default_start_date)
 
-    def _build_query_string(self, catalog_entry, start_date, end_date=None, order_by_clause=True):
+    def _build_query_string(self, catalog_entry, start_date, end_date=None, order_by_clause=True, country="USA"):
         selected_properties = self._get_selected_properties(catalog_entry)
 
         query = "SELECT {} FROM {}".format(",".join(selected_properties), catalog_entry['stream'])
@@ -326,7 +328,7 @@ class Salesforce():
         replication_key = catalog_metadata.get((), {}).get('replication-key')
 
         if replication_key:
-            where_clause = " WHERE {} >= {} ".format(
+            where_clause = " WHERE {} >= {} AND iso_country_code__c='USA'".format(
                 replication_key,
                 start_date)
             if end_date:
