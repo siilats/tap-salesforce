@@ -333,10 +333,12 @@ class Salesforce():
                 country_field = "iso_country_code_customer__c='USA' AND"
             elif catalog_entry['stream'] == "Lead":
                 country_field = "iso_country_code__c='USA' AND"
-            elif catalog_entry['stream'] == "Quote" or catalog_entry['stream'] == "Payment__c":
+            elif catalog_entry['stream'] == "Quote":
                 country_field = "OpportunityId in (select id from Opportunity where iso_country_code_customer__c='USA') AND "
+            elif catalog_entry['stream'] == "Payment__c":
+                country_field = "Quote__c.id in (select id from Quote where record_type_name__c like 'US%') AND "
             elif catalog_entry['stream'] == "QuoteLineItem":
-                country_field = "QuoteId in (select id from Quote where record_type_name__c like 'US%')"
+                country_field = "QuoteId in (select id from Quote where record_type_name__c like 'US%') AND "
 
             where_clause = " WHERE " +  country_field + " {} >= {}".format(
                 replication_key,
