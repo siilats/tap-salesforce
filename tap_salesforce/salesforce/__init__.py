@@ -328,7 +328,17 @@ class Salesforce():
         replication_key = catalog_metadata.get((), {}).get('replication-key')
 
         if replication_key:
-            where_clause = " WHERE {} >= {} AND iso_country_code__c='USA'".format(
+            country_field = ""
+            if catalog_entry['stream'] == "Opportunity":
+                country_field = "iso_country_code_customer__c='USA' AND"
+            elif catalog_entry['stream'] == "Lead":
+                country_field = "iso_country_code__c='USA' AND"
+            elif catalog_entry['stream'] == "Quote" or catalog_entry['stream'] == "Payment__c":
+                country_field = "OpportunityId in (select id from Opportunity where iso_country_code_customer__c='USA') AND "
+            elif catalog_entry['stream'] == "QuoteLineItem":
+                country_field = "QuoteId in (select id from Quote where record_type_name__c like 'US%')"
+
+            where_clause = " WHERE " +  country_field + " {} >= {}".format(
                 replication_key,
                 start_date)
             if end_date:
