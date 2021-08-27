@@ -211,7 +211,7 @@ class Salesforce():
 
         self.rest_requests_attempted = 0
         self.jobs_completed = 0
-        self.data_url = "{}/services/data/v41.0/{}"
+        self.data_url = "{}/services/data/v49.0/{}"
         self.pk_chunking = False
 
         self.auth = SalesforceAuth.from_credentials(credentials, is_sandbox=self.is_sandbox)
@@ -330,7 +330,7 @@ class Salesforce():
 
         if replication_key:
             country_field = ""
-            if catalog_entry['stream'] == "Opportunity":
+            if catalog_entry['stream'] == "Opportunity" or  catalog_entry['stream'] == "Account":
                 country_field = "iso_country_code_customer__c='USA' AND"
             elif catalog_entry['stream'] == "Lead":
                 country_field = "iso_country_code__c='USA' AND"
