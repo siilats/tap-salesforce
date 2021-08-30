@@ -330,9 +330,9 @@ class Salesforce():
 
         if replication_key:
             country_field = ""
-            if catalog_entry['stream'] == "Opportunity" or  catalog_entry['stream'] == "Account":
+            if catalog_entry['stream'] == "Opportunity":
                 country_field = "iso_country_code_customer__c='USA' AND"
-            elif catalog_entry['stream'] == "Lead":
+            elif catalog_entry['stream'] == "Lead" or  catalog_entry['stream'] == "Account":
                 country_field = "iso_country_code__c='USA' AND"
             elif catalog_entry['stream'] == "Quote":
                 country_field = "OpportunityId in (select id from Opportunity where iso_country_code_customer__c='USA') AND "
